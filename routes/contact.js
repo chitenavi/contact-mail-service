@@ -1,6 +1,6 @@
 const express = require('express');
 const contactRouter = express.Router();
-const transporter = require('../utils/nodemailerConfig');
+const wrapedSendMail = require('../utils/nodemailerConfig');
 const {
   contactFormValidationRules,
   validate,
@@ -10,7 +10,7 @@ contactRouter.post(
   '/',
   contactFormValidationRules(),
   validate,
-  (req, res, next) => {
+  async (req, res, next) => {
     // Create template for email notification
     const output = `
   <h2>You have a new contact request from ${req.body.source}</h2>
@@ -37,20 +37,18 @@ contactRouter.post(
       ],
     };
 
-    // res.status(200).json({ status: 'success' });
-    transporter.sendMail(mail, (err, data) => {
-      if (err) {
-        console.log(err);
-        res.json({
-          status: 'fail',
-        });
-      } else {
-        console.log('Email sent!');
+    try {
+      const resp = await wrapedSendMail(mail);
+      if (resp) {
         res.status(200).json({
           status: 'success',
         });
       }
-    });
+    } catch (err) {
+      res.status(400).json({
+        status: 'fail',
+      });
+    }
   },
 );
 

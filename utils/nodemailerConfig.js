@@ -37,4 +37,18 @@ transporter.verify((error, success) => {
   }
 });
 
-module.exports = transporter;
+async function wrapedSendMail(mailOptions) {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log('Error!💥:', error);
+        reject(true);
+      } else {
+        console.log('Email sent!');
+        resolve(true);
+      }
+    });
+  });
+}
+
+module.exports = wrapedSendMail;
