@@ -37,20 +37,20 @@ contactRouter.post(
       ],
     };
 
-    res.status(200).json({ st: 'ok' });
-    // transporter.sendMail(mail, (err, data) => {
-    //   if (err) {
-    //     console.log(err);
-    //     res.json({
-    //       status: 'fail',
-    //     });
-    //   } else {
-    //     console.log('Email sent!');
-    //     res.status(200).json({
-    //       status: 'success',
-    //     });
-    //   }
-    // });
+    // res.status(200).json({ status: 'success' });
+    transporter.sendMail(mail, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({
+          status: 'fail',
+        });
+      } else {
+        console.log('Email sent!');
+        res.status(200).json({
+          status: 'success',
+        });
+      }
+    });
   },
 );
 

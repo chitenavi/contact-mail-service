@@ -25,7 +25,6 @@ const middlewares = [
 
 app.use(middlewares);
 
-app.use('/auth', require('./routes/auth'));
 app.use('/contact', reCaptcha(), require('./routes/contact'));
 
 app.use((req, res, next) => {
